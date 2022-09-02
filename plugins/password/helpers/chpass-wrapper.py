@@ -17,16 +17,18 @@ except ValueError:
 try:
     user = pwd.getpwnam(username)
 except KeyError:
-    sys.exit('No such user: %s' % username)
+    sys.exit(f'No such user: {username}')
 
 if user.pw_uid < 1000:
     sys.exit('Changing the password for user id < 1000 is forbidden')
 
 if username in BLACKLIST:
-    sys.exit('Changing password for user %s is forbidden (user blacklisted)' %
-             username)
+    sys.exit(
+        f'Changing password for user {username} is forbidden (user blacklisted)'
+    )
+
 
 handle = subprocess.Popen('/usr/sbin/chpasswd', stdin = subprocess.PIPE, universal_newlines = True)
-handle.communicate('%s:%s' % (username, password))
+handle.communicate(f'{username}:{password}')
 
 sys.exit(handle.returncode)
